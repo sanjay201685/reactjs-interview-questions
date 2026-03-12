@@ -1,3 +1,761 @@
+# \# React Interview Preparation (Senior Developers)
+
+# 
+
+# This document contains \*\*advanced React interview questions, coding
+
+# problems, and system design concepts\*\* commonly asked in service
+
+# companies and product companies.
+
+# 
+
+# Target Experience: \*\*5--15+ years\*\*
+
+# 
+
+# Technologies Covered:
+
+# 
+
+# \-   React
+
+# \-   Hooks
+
+# \-   Performance Optimization
+
+# \-   State Management
+
+# \-   System Design
+
+# \-   React Architecture
+
+# \-   SSR using Next.js
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# Table of Contents
+
+# 
+
+# 1\.  Advanced React Interview Questions\\
+
+# 2\.  React Coding Interview Questions\\
+
+# 3\.  React System Design Questions\\
+
+# 4\.  Performance Optimization\\
+
+# 5\.  Security in React\\
+
+# 6\.  Large Scale React Architecture
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# 1. Advanced React Interview Questions
+
+# 
+
+# \## 1. What is React Fiber?
+
+# 
+
+# React Fiber is the reconciliation engine introduced in React 16.
+
+# 
+
+# Purpose: - Incremental rendering - Ability to pause and resume
+
+# rendering - Prioritize important UI updates
+
+# 
+
+# Benefits: - Improved performance - Better responsiveness
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 2. What happens when setState is called?
+
+# 
+
+# Steps: 1. React schedules state update. 2. React creates new Virtual
+
+# DOM. 3. React performs diffing with previous Virtual DOM. 4. React
+
+# determines minimal changes. 5. React updates the real DOM.
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 3. What are Render Phase and Commit Phase?
+
+# 
+
+# Render Phase: - React calculates UI changes - Can be interrupted
+
+# 
+
+# Commit Phase: - React applies DOM updates - Cannot be interrupted
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 4. Why should Hooks not be called conditionally?
+
+# 
+
+# Hooks rely on consistent call order between renders.
+
+# 
+
+# Incorrect example:
+
+# 
+
+# ``` javascript
+
+# if(condition){
+
+# &#x20; useEffect(()=>{
+
+# &#x20;   console.log("Hello")
+
+# &#x20; })
+
+# }
+
+# ```
+
+# 
+
+# Correct:
+
+# 
+
+# ``` javascript
+
+# useEffect(()=>{
+
+# &#x20;if(condition){
+
+# &#x20;  console.log("Hello")
+
+# &#x20;}
+
+# },\[condition])
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 5. What causes unnecessary re-renders?
+
+# 
+
+# Common causes: - Parent component re-render - Inline functions - Object
+
+# reference changes - Context updates
+
+# 
+
+# Solutions: - React.memo - useMemo - useCallback
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 6. Difference between useMemo and useCallback
+
+# 
+
+# &#x20; Hook          Purpose
+
+# &#x20; ------------- --------------------------
+
+# &#x20; useMemo       Memoizes computed values
+
+# &#x20; useCallback   Memoizes functions
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# const memoValue = useMemo(() => calculateTotal(a,b), \[a,b])
+
+# ```
+
+# 
+
+# ``` javascript
+
+# const memoFunc = useCallback(() => handleClick(), \[])
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 7. What is stale closure problem?
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# useEffect(()=>{
+
+# &#x20;setInterval(()=>{
+
+# &#x20;  console.log(count)
+
+# &#x20;},1000)
+
+# },\[])
+
+# ```
+
+# 
+
+# The interval captures old value of state.
+
+# 
+
+# Solutions: - Add dependency - Use functional updates - Use useRef
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 8. What is reconciliation in React?
+
+# 
+
+# Reconciliation is the process React uses to: - Compare old Virtual DOM -
+
+# Compare new Virtual DOM - Update only the changed nodes
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 9. What are keys in React lists?
+
+# 
+
+# Keys help React identify which items changed.
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# items.map(item => (
+
+# &#x20; <li key={item.id}>{item.name}</li>
+
+# ))
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 10. What is React Concurrent Rendering?
+
+# 
+
+# Concurrent rendering allows React to: - pause rendering - prioritize
+
+# updates - improve responsiveness
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# startTransition(()=>{
+
+# &#x20;setSearchQuery(value)
+
+# })
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# 2. React Coding Interview Questions
+
+# 
+
+# \## 1. Implement Debounce Function
+
+# 
+
+# ``` javascript
+
+# function debounce(fn, delay){
+
+# &#x20;let timer;
+
+# 
+
+# &#x20;return (...args)=>{
+
+# &#x20;  clearTimeout(timer)
+
+# 
+
+# &#x20;  timer = setTimeout(()=>{
+
+# &#x20;    fn(...args)
+
+# &#x20;  }, delay)
+
+# &#x20;}
+
+# }
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 2. Custom Hook: useDebounce
+
+# 
+
+# ``` javascript
+
+# function useDebounce(value, delay){
+
+# 
+
+# &#x20;const \[debouncedValue,setDebouncedValue] = useState(value)
+
+# 
+
+# &#x20;useEffect(()=>{
+
+# &#x20; const handler = setTimeout(()=>{
+
+# &#x20;  setDebouncedValue(value)
+
+# &#x20; }, delay)
+
+# 
+
+# &#x20; return ()=>clearTimeout(handler)
+
+# 
+
+# &#x20;},\[value,delay])
+
+# 
+
+# &#x20;return debouncedValue
+
+# }
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 3. Build Infinite Scroll
+
+# 
+
+# Steps: 1. Detect scroll position 2. Call API for next page 3. Append
+
+# data 4. Show loading indicator
+
+# 
+
+# Key concept: Intersection Observer API.
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 4. Build Autocomplete Search
+
+# 
+
+# Features: - Debounce API calls - Keyboard navigation - Highlight results
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## 5. File Upload Component
+
+# 
+
+# Features: - Drag and drop - Upload progress - File validation
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# function FileUpload(){
+
+# 
+
+# &#x20;const handleUpload = (event)=>{
+
+# &#x20;  const file = event.target.files\[0]
+
+# 
+
+# &#x20;  const formData = new FormData()
+
+# &#x20;  formData.append("file",file)
+
+# 
+
+# &#x20;  fetch("/upload",{
+
+# &#x20;    method:"POST",
+
+# &#x20;    body:formData
+
+# &#x20;  })
+
+# &#x20;}
+
+# 
+
+# &#x20;return <input type="file" onChange={handleUpload}/>
+
+# }
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# 3. React System Design
+
+# 
+
+# \## High Level Architecture
+
+# 
+
+# Client (React / Next.js) \\| API Gateway \\| Microservices \\| Database
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## Recommended Folder Structure
+
+# 
+
+# &#x20;   src
+
+# &#x20;    ├── components
+
+# &#x20;    ├── pages
+
+# &#x20;    ├── hooks
+
+# &#x20;    ├── services
+
+# &#x20;    ├── store
+
+# &#x20;    ├── utils
+
+# &#x20;    ├── constants
+
+# &#x20;    ├── layouts
+
+# &#x20;    └── styles
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## State Management Strategy
+
+# 
+
+# Small App → Context API\\
+
+# Medium App → Zustand\\
+
+# Large App → Redux Toolkit
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \## API Layer
+
+# 
+
+# &#x20;   services
+
+# &#x20;    ├── api.js
+
+# &#x20;    ├── authService.js
+
+# &#x20;    └── productService.js
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# export async function getProducts(){
+
+# &#x20;return fetch("/api/products")
+
+# }
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# 4. Performance Optimization
+
+# 
+
+# Techniques: - Code Splitting - Lazy Loading - Virtualization -
+
+# Memoization - CDN caching
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# const Home = React.lazy(()=>import('./Home'))
+
+# ```
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# 5. Security in React
+
+# 
+
+# Best Practices: - Avoid dangerouslySetInnerHTML - Use HTTPS - JWT
+
+# authentication - Role-based access control
+
+# 
+
+# Example:
+
+# 
+
+# ``` javascript
+
+# <div>{userInput}</div>
+
+# ```
+
+# 
+
+# React escapes HTML automatically.
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# 6. Large Scale React Architecture
+
+# 
+
+# Enterprise React architecture often includes:
+
+# 
+
+# \-   Micro Frontend architecture
+
+# \-   Shared component library
+
+# \-   Design system
+
+# \-   CI/CD pipelines
+
+# \-   Performance monitoring
+
+# 
+
+# Example Micro-Frontend:
+
+# 
+
+# Shell Application ├── Orders App ├── Payments App └── Profile App
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# Example System Design Question
+
+# 
+
+# Design a \*\*document upload system with AI validation\*\*.
+
+# 
+
+# Architecture:
+
+# 
+
+# React UI\\
+
+# \\|\\
+
+# Upload API\\
+
+# \\|\\
+
+# File Storage\\
+
+# \\|\\
+
+# AI Validation Service\\
+
+# \\|\\
+
+# Fraud Detection
+
+# 
+
+# Features: - Upload document - Validate invoice - Show processing
+
+# status - Dashboard analytics
+
+# 
+
+# \------------------------------------------------------------------------
+
+# 
+
+# \# Conclusion
+
+# 
+
+# This guide helps prepare for:
+
+# 
+
+# \-   Senior React Developer roles
+
+# \-   Frontend Architect roles
+
+# \-   Product company interviews
+
+# 
+
+# Focus areas: - React internals - Performance optimization - Architecture
+
+# design - System design thinking
+
+
+
+# 
+
+# 
+
+# 
+
 # Reactjs interview questions
 
 
@@ -2187,6 +2945,16 @@ AI Validation API
 Fraud Detection Model
 
 ```
+
+
+
+\---
+
+
+
+If you want, I can also show you \*\*10 React questions that almost always appear in senior interviews (very tricky ones)\*\* — many \*\*15+ year developers fail them.\*\*
+
+They test \*\*deep React knowledge rather than coding.\*\*
 
 
 
